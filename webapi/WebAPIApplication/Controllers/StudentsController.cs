@@ -15,20 +15,27 @@ namespace WebAPIApplication.Controllers
         public IEnumerable<Student> Get()
         {
             IEnumerable<Student> studentList = new List<Student>(){
-                new Student(1, "Tom", new List<StudentClass>(), 2.5f),
-                new Student(2, "Jane", new List<StudentClass>(), 3.4f),
-                new Student(3, "Brad", new List<StudentClass>(), 4.0f),
-                new Student(4, "Dave", new List<StudentClass>(), 1.7f)
+                new Student(1, "Tom", 2.5f),
+                new Student(2, "Jane", 3.4f),
+                new Student(3, "Brad", 4.0f),
+                new Student(4, "Dave", 1.7f)
             }.AsEnumerable();
 
             return studentList;
         }
 
-        // GET api/values/5
+        // GET api/students/5
+        // get classes
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IEnumerable<StudentClass> Get(int id)
         {
-            return "value";
+            IEnumerable<StudentClass> classes = new List<StudentClass>()
+            {
+                new StudentClass(1, "Math", 4.0f),
+                new StudentClass(2, "History", 1.5f),
+                new StudentClass(3, "Spanish", 2.0f)
+            }.AsEnumerable();
+            return classes;
         }
 
         // POST api/values
