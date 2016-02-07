@@ -7,6 +7,7 @@ using WebAPIApplication.Models;
 using WebAPIApplication.Repositories;
 using StackExchange.Redis;
 using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Logging;
 
 namespace WebAPIApplication.Controllers
 {
@@ -15,10 +16,13 @@ namespace WebAPIApplication.Controllers
     {
         private IStudentRepository _studentRepository;
         private IClassRepository _classRepository;
+        private ILogger<StudentsController> _logger;
 
-        public StudentsController(IOptions<RedisConfig> redisConfig)
+        public StudentsController(IOptions<RedisConfig> redisConfig, ILogger<StudentsController> logger)
         {
             String redisConnection = redisConfig.Value.RedisConnection;
+            _logger = logger;
+            _logger.LogCritical("logging redis connection: " + redisConnection);
             _studentRepository = new StudentRepository(ConnectionMultiplexer.Connect(redisConnection).GetDatabase(0));
             _classRepository = new ClassRepository(ConnectionMultiplexer.Connect(redisConnection).GetDatabase(0));
         }
