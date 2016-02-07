@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using WebAPIApplication.Models;
 
 namespace WebAPIApplication.Controllers
 {
@@ -11,9 +12,16 @@ namespace WebAPIApplication.Controllers
     {
         // GET: api/students
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Student> Get()
         {
-            return new string[] { "value1", "value2" };
+            IEnumerable<Student> studentList = new List<Student>(){
+                new Student(1, "Tom", new List<StudentClass>(), 2.5f),
+                new Student(2, "Jane", new List<StudentClass>(), 3.4f),
+                new Student(3, "Brad", new List<StudentClass>(), 4.0f),
+                new Student(4, "Dave", new List<StudentClass>(), 1.7f)
+            }.AsEnumerable();
+
+            return studentList;
         }
 
         // GET api/values/5
