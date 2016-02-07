@@ -4,24 +4,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using WebAPIApplication.Models;
+using WebAPIApplication.Repositories;
+using StackExchange.Redis;
+using Microsoft.Extensions.OptionsModel;
 
 namespace WebAPIApplication.Controllers
 {
     [Route("api/[controller]")]
     public class StudentsController : Controller
     {
+        private IStudentRepository _studentRepository;
+        private IClassRepository _classRepository;
+
+        public StudentsController(IOptions<RedisConfig> redisConfig)
+        {
+            String redisConnection = redisConfig.Value.RedisConnection;
+            _studentRepository = new StudentRepository(ConnectionMultiplexer.Connect(redisConnection).GetDatabase(0));
+            _classRepository = new ClassRepository(ConnectionMultiplexer.Connect(redisConnection).GetDatabase(0));
+        }
+
         // GET: api/students
         [HttpGet]
         public IEnumerable<Student> Get()
         {
-            IEnumerable<Student> studentList = new List<Student>(){
-                new Student(1, "Tom", 2.5f),
-                new Student(2, "Jane", 3.4f),
-                new Student(3, "Brad", 4.0f),
-                new Student(4, "Dave", 1.7f)
-            }.AsEnumerable();
-
-            return studentList;
+            return _studentRepository.GetAll().AsEnumerable();
         }
 
         // GET api/students/5
@@ -29,13 +35,7 @@ namespace WebAPIApplication.Controllers
         [HttpGet("{id}")]
         public IEnumerable<StudentClass> Get(int id)
         {
-            IEnumerable<StudentClass> classes = new List<StudentClass>()
-            {
-                new StudentClass(1, "Math", 4.0f),
-                new StudentClass(2, "History", 1.5f),
-                new StudentClass(3, "Spanish", 2.0f)
-            }.AsEnumerable();
-            return classes;
+            return _classRepository.GetStudentClasses(id).AsEnumerable();
         }
 
         // POST api/values

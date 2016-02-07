@@ -28,6 +28,7 @@ namespace WebAPIApplication
         {
             // Add framework services.
             services.AddMvc();
+            services.Configure<RedisConfig>(Configuration.GetSection("Redis"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
