@@ -29,13 +29,49 @@ namespace WebAPIApplication.Controllers
         [HttpGet("{id}")]
         public IEnumerable<StudentClass> Get(int id)
         {
-            IEnumerable<StudentClass> classes = new List<StudentClass>()
-            {
-                new StudentClass(1, "Math", 4.0f),
-                new StudentClass(2, "History", 1.5f),
-                new StudentClass(3, "Spanish", 2.0f)
-            }.AsEnumerable();
-            return classes;
+            IDictionary<int, IEnumerable<StudentClass>> classList = 
+                new Dictionary<int, IEnumerable<StudentClass>>()
+                {
+                    {
+                        1,
+                        new List<StudentClass>()
+                        {
+                            new StudentClass(1, "Math", 4.0f),
+                            new StudentClass(2, "History", 1.5f),
+                            new StudentClass(3, "Spanish", 2.0f)
+                        }.AsEnumerable()
+                    },
+                    {
+                        2,
+                        new List<StudentClass>()
+                        {
+                            new StudentClass(1, "Math", 1.2f),
+                            new StudentClass(2, "History", 2.5f),
+                            new StudentClass(3, "Spanish", 2.5f)
+                        }.AsEnumerable()
+                    },
+                    {
+                        3,
+                        new List<StudentClass>()
+                        {
+                            new StudentClass(1, "Math", 2.2f),
+                            new StudentClass(2, "History", 3.5f),
+                            new StudentClass(3, "Spanish", 4.0f)
+                        }.AsEnumerable()
+                    },
+                    {
+                        4,
+                        new List<StudentClass>()
+                        {
+                            new StudentClass(1, "Math", 1.2f),
+                            new StudentClass(2, "History", 2.5f),
+                            new StudentClass(3, "Spanish", 2.5f)
+                        }.AsEnumerable()
+                    }
+                };
+
+            return classList.FirstOrDefault(t => t.Key == id).Value;
+            
         }
 
         // POST api/values
