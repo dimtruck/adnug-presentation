@@ -28,6 +28,29 @@ popd
 
 # usage ./spin-up-demo.sh NUMBER_OF_NODES
 
+#1. build webapi
+pushd webapi
+docker build --tag adnug-demo .
+popd
+docker run --name webapi --detach --publish-all adnug-demo
+
+#2. build nginx
+pushd demo
+docker build --tag agnug-nginx .
+popd
+docker run -tid --link webapi:webapi --name angularjs-nginx -p 8080:80 agnug-nginx
+
+#3. run redis
+docker run -p 6379:6379 --label type=redis --name adnug-redis -d redis
+
+#4. run haproxy
+pushd haproxy
+docker build --tag agnug-haproxy .
+popd
+docker run -d -p 80:80 --name adnug-haproxy adnug-haproxy
+
+
+
 #1. check if redis container already exists (docker ps --filter "label=type=redis"), if it doesn't spin one up.
 # if it does, don't do anything
 #2. check if nginx node already exists and exist equals to NUMBER_OF_NODES
@@ -64,15 +87,3 @@ popd
 
 #6. show deploying our app to a remote node 
 #7. scaling nodes
-
-
-
-# set up redis and expose it on 6379
-docker run -p 6379:6379 --label type=redis --name adnug-redis -d redis
-
-# spin up nginx container on node 1
-
-
-#build web api image
-docker build --tag adnug-demo .
-docker run --name demo --detach --publish-all aspnet-demo
